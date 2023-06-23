@@ -1,7 +1,6 @@
 package rotas
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -17,14 +16,15 @@ type Rota struct {
 func Configurar(router *mux.Router) *mux.Router {
 	rotas := rotasLogin
 
-	fmt.Println("entrei aqui")
-	fmt.Println(rotas)
+	rotas = append(rotas, routerUsers...)
 
 	for _, rota := range rotas {
-		fmt.Println("entrei aqui tambem")
-
 		router.HandleFunc(rota.URI, rota.Funcao).Methods(rota.Metodo)
 	}
+
+	fileServer := http.FileServer(http.Dir("./assets/"))
+
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fileServer))
 
 	return router
 }
