@@ -11,4 +11,20 @@ function createAccount(event) {
         return;
     }
 
+    $.ajax({
+        url: apiPath(),
+        method: 'POST',
+        data: {
+            name: $('#name').val(),
+            email: $('#email').val(),
+            nick: $('#nick').val(),
+            email: $('#email').val(),
+            password: $('#password').val(),
+        }
+    });
+
+
+    function apiPath() {
+        return "/send-api";
+    }
 }

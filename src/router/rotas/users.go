@@ -12,4 +12,10 @@ var routerUsers = []Rota{
 		Funcao:     controllers.LoadViewCreate,
 		RequerAuth: false,
 	},
+	{
+		URI:        "/send-api",
+		Metodo:     http.MethodPost,
+		Funcao:     controllers.CreateUser,
+		RequerAuth: false,
+	},
 }

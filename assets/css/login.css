@@ -53,7 +53,6 @@ input::placeholder {
     border-radius: 10px;
     position: relative;
     padding: 50px 0 90px 0;
-    top: 250px;
 }
 
 .webApp-form > span {
