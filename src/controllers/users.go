@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"webapp/responses"
+	"webapp/src/config"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -25,8 +26,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		responses.JSON(w, http.StatusBadRequest, responses.ErrorApi{Err: err.Error()})
 		return
 	}
+	url := fmt.Sprintf("%s/createuser", config.APIURL)
 
-	response, err := http.Post("http://localhost:5000/createuser", "application/json", bytes.NewBuffer(user))
+	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
 		log.Fatal(err)
 		responses.JSON(w, http.StatusInternalServerError, responses.ErrorApi{Err: err.Error()})
