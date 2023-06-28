@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -8,11 +9,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var APIURL = ""
+var (
+	APIURL = ""
+	Port   = 0
+)
 
-var Port = 0
-var HashKey = []byte{}
-var BlockKey = []byte{}
+// var APIURL = ""
+
+// var Port = 0
+var HashKey = []byte("")
+var BlockKey = []byte("")
 
 func Load() {
 	var erro error
@@ -29,5 +35,6 @@ func Load() {
 	APIURL = os.Getenv("APIURL")
 	HashKey = []byte(os.Getenv("HASH_KEY"))
 	BlockKey = []byte(os.Getenv("BLOCK_KEY"))
+	fmt.Println(HashKey)
 
 }
