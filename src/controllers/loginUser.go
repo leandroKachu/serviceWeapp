@@ -4,21 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"strconv"
 	"webapp/responses"
 	"webapp/src/config"
 	"webapp/src/cookies"
+	"webapp/src/model"
 )
 
 func LogUser(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-
-	var jsonResponse struct {
-		ID    int64  `json:"id"`
-		Token string `json:"token"`
-	}
 
 	loginUser, err := json.Marshal(map[string]string{
 		"email":    r.FormValue("email"),
@@ -37,18 +31,19 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := ioutil.ReadAll(response.Body)
-	err = json.Unmarshal([]byte(token), &jsonResponse)
+	defer response.Body.Close()
 
-	if err != nil {
+	if response.StatusCode >= 400 {
+		responses.StatusCodeError(w, response)
+	}
+
+	var dataAuth model.DataAuth
+	if err := json.NewDecoder(response.Body).Decode(&dataAuth); err != nil {
 		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErrorApi{Err: err.Error()})
 		return
 	}
 
-	idStr := strconv.FormatInt(jsonResponse.ID, 10)
-	responses.JSON(w, response.StatusCode, nil)
-
-	if erro := cookies.Save(w, idStr, jsonResponse.Token); erro != nil {
+	if err = cookies.Save(w, dataAuth.ID, dataAuth.Token); err != nil {
 		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErrorApi{Err: err.Error()})
 		return
 	}
