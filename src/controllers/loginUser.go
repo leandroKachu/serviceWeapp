@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"webapp/responses"
 	"webapp/src/config"
+	"webapp/src/cookies"
 )
 
 func LogUser(w http.ResponseWriter, r *http.Request) {
@@ -37,14 +39,18 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 
 	token, _ := ioutil.ReadAll(response.Body)
 	err = json.Unmarshal([]byte(token), &jsonResponse)
+
 	if err != nil {
-		fmt.Println("Erro ao decodificar o JSON:", err)
+		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErrorApi{Err: err.Error()})
 		return
 	}
 
-	id := jsonResponse.ID
-	tokenValue := jsonResponse.Token
-	fmt.Println(id)
-	fmt.Println(tokenValue)
+	idStr := strconv.FormatInt(jsonResponse.ID, 10)
+	responses.JSON(w, response.StatusCode, nil)
+
+	if erro := cookies.Save(w, idStr, jsonResponse.Token); erro != nil {
+		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErrorApi{Err: err.Error()})
+		return
+	}
 
 }
