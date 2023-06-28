@@ -5,7 +5,8 @@
     <title>Título da Página</title>
 </head>
 <body>
-    <h1>Título</h1>
-    <p>Parágrafo de exemplo</p>
+    {{range . }}
+    <h3>{{.Title}}</h3>
+    {{end}}
 </body>
 </html>
